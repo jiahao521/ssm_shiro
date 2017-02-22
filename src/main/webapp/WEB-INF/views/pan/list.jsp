@@ -94,7 +94,9 @@
                                 <td>${disk.size}</td>
                                 <td>${disk.createTime}</td>
                                 <td>${disk.createUser}</td>
-                                <td></td>
+                                <td>
+                                    <a href="javascript:;" class="remove" rel="${disk.id}"><i class="fa fa-trash text-danger"></i></a>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -154,6 +156,30 @@
 
             });
         });
+
+        $(".remove").click(function () {
+           var id = $(this).attr("rel");
+
+           //参数index用于关闭弹窗
+           layer.confirm("确定要删除么？",function (index) {
+               layer.close(index);
+
+               $.get("/pan/del/"+id).done(function (resp) {
+                   if(resp.status == 'success') {
+                       layer.msg("删除成功");
+                       window.history.go(0);
+                   } else {
+                       layer.msg(resp.message);
+                   }
+               }).error(function () {
+                   layer.msg("服务器错误，稍后重试");
+               })
+
+           });
+
+
+        });
+
 
 
     });

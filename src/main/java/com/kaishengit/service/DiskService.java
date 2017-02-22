@@ -20,4 +20,6 @@ public interface DiskService {
     InputStream downLoadFile(Integer id) throws FileNotFoundException;
 
     Disk findById(Integer id);
+
+    void delById(Integer id);
 }

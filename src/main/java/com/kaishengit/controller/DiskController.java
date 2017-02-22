@@ -95,5 +95,13 @@ public class DiskController {
 
     }
 
+    @GetMapping("/del/{id:\\d+}")
+    @ResponseBody
+    public AjaxResult del(@PathVariable Integer id) {
+        diskService.delById(id);
+        return new AjaxResult(AjaxResult.SUCCESS);
+
+
+    }
 
 }

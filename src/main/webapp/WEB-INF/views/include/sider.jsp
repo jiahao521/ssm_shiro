@@ -14,7 +14,7 @@
                     <i class="fa fa-circle-o"></i> <span>设备租赁</span>
                 </a>
             </li>
-            <li class="treeview ${param.menu == 'people_device_rent' ? 'active' : ''}">
+            <li class="treeview ${param.menu == 'workers_rent' ? 'active' : ''}">
                 <a href="/people/rent">
                     <i class="fa fa-circle-o"></i> <span>劳务派遣</span>
                 </a>

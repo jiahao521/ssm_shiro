@@ -13,4 +13,10 @@ public interface DiskMapper {
     void save(Disk disk);
 
     Disk findById(Integer id);
+
+    void delete(Integer id);
+
+    List<Disk> findAll();
+
+    void batchDel(List<Integer> delIdList);
 }
