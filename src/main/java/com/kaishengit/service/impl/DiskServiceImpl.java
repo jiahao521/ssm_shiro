@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,5 +79,21 @@ public class DiskServiceImpl implements DiskService {
         disk.setSize(FileUtils.byteCountToDisplaySize(size));
 
         diskMapper.save(disk);
+    }
+
+    @Override
+    public InputStream downLoadFile(Integer id) throws FileNotFoundException {
+        Disk disk = diskMapper.findById(id);
+        if(disk == null || Disk.FOLDER_TYPE.equals(disk.getType())) {
+            return null;
+        } else {
+            FileInputStream inputStream = new FileInputStream(new File(new File(savePath),disk.getName()));
+            return inputStream;
+        }
+    }
+
+    @Override
+    public Disk findById(Integer id) {
+        return diskMapper.findById(id);
     }
 }

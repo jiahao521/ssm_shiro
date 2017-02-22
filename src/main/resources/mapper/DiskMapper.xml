@@ -8,4 +8,7 @@
     <select id="findByFid" resultType="com.kaishengit.pojo.Disk">
         select * from t_disk where fid = #{fid}
     </select>
+    <select id="findById" resultType="com.kaishengit.pojo.Disk">
+        select * from t_disk where id = #{id}
+    </select>
 </mapper>
