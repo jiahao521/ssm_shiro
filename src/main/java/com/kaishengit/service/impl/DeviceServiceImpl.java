@@ -1,20 +1,15 @@
 package com.kaishengit.service.impl;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Table;
 import com.kaishengit.dto.DeviceRentDto;
 import com.kaishengit.exception.ServiceException;
-import com.kaishengit.mapper.DeviceMapper;
-import com.kaishengit.mapper.DeviceRentDetailMapper;
-import com.kaishengit.mapper.DeviceRentDocMapper;
-import com.kaishengit.mapper.DeviceRentMapper;
+import com.kaishengit.mapper.*;
 import com.kaishengit.pojo.*;
 import com.kaishengit.service.DeviceService;
 import com.kaishengit.shiro.ShiroUtil;
 import com.kaishengit.util.SerialNumberUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +36,9 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceRentDetailMapper rentDetailMapper;
     @Autowired
     private DeviceRentDocMapper rentDocMapper;
+    @Autowired
+    private FinanceMapper financeMapper;
+
     @Value("${upload.path}")
     private String fileSavePath;
 
@@ -88,6 +86,12 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.findById(id);
     }
 
+    /**
+     * 保存合同并计算金额
+     * 发送财务流水
+     * @param deviceRentDto
+     * @return
+     */
     @Override
     @Transactional
     public String saveRent(DeviceRentDto deviceRentDto) {
@@ -162,6 +166,19 @@ public class DeviceServiceImpl implements DeviceService {
 
 
         //4. 写入财务流水
+
+        Finance finance = new Finance();
+        finance.setCreateUser(ShiroUtil.getCurrentUserName());
+        finance.setType(Finance.TYPE_IN);
+        finance.setCreateDate(DateTime.now().toString("yyyy-MM-dd"));
+        finance.setModule("设备租赁");
+        finance.setMoney(preCost);
+        finance.setSerialNumber(SerialNumberUtil.getSerialNumber());
+        finance.setState(Finance.STATE_NEW);
+        finance.setMark("预付款");
+        finance.setModuleSerialNumber(rent.getSerialNumber());
+
+        financeMapper.save(finance);
 
         return rent.getSerialNumber();
     }
@@ -243,6 +260,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     /**
      * 更改合同状态
+     * 发送尾款财务流水
      * @param id
      */
     @Override
@@ -254,7 +272,23 @@ public class DeviceServiceImpl implements DeviceService {
         rentMapper.updateState(deviceRent);
 
         //2.向财务模块发送尾款记录
+        Finance finance = new Finance();
+
+        finance.setCreateUser(ShiroUtil.getCurrentUserName());
+        finance.setType(Finance.TYPE_IN);
+        finance.setCreateDate(DateTime.now().toString("yyyy-MM-dd"));
+        finance.setModule("设备租赁");
+        finance.setMoney(deviceRent.getLastCost());
+        finance.setSerialNumber(SerialNumberUtil.getSerialNumber());
+        finance.setState(Finance.STATE_NEW);
+        finance.setMark("合同尾款");
+        finance.setModuleSerialNumber(deviceRent.getSerialNumber());
+
+        financeMapper.save(finance);
+
     }
+
+
 
 
 }

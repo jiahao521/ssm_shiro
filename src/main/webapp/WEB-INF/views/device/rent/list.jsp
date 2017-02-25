@@ -62,13 +62,13 @@
 
 <%@include file="../../include/js.jsp"%>
 <script src="/static/plugins/datatables/jquery.dataTables.min.js"/>
-<script src="/static/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js"/>
 <script src="/static/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js"></script>
 <script src="/static/plugins/layer/layer.js"></script>
 <script>
     $(function () {
-        var table  = $(".table").dataTable({
+        var table  = $(".table").DataTable({
             "lengthChange":false,//每页显示长度不可变
+            //"lengthMenu":[5,10,20],//每页显示长度菜单
             "pageLength":10,
             "serverSide":true,
             "ajax":{
@@ -78,10 +78,11 @@
             "searching":false,//不使用自带的搜索
             "order":[[0,'desc']],//默认排序方式,
             "ordering": false,
-            "autoWidth": false,
+            "autoWidth": false,//根据浏览器自动调节显示
             "columns":[
                 {"data":"id","name":"id"},
                 {"data":function(row){
+                //显示流水号
                     if(row.serialNumber) {
                         return "<a href='/device/rent/" + row.serialNumber + "'>" + row.serialNumber + "</a>";
                     } else {

@@ -174,7 +174,7 @@
                         </div>
                         <div class="form-group">
                             <label>租赁数量</label>
-                            <input type="text" class="form-control" id="rentNum">
+                            <input type="number" class="form-control" id="rentNum" name="quantity" min="1" max="${currentNum}">
                         </div>
                     </form>
                 </div>

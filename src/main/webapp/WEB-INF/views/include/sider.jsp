@@ -26,8 +26,8 @@
             </li>
             <shiro:hasRole name="role_fin">
                 <li class="header">财务模块</li>
-                <li class="treeview">
-                    <a href="#">
+                <li class="treeview ${param.menu == 'finance_day' ? 'active' : ''}">
+                    <a href="/finance">
                         <i class="fa fa-circle-o"></i> <span>财务报表</span> <i class="fa fa-angle-left pull-right"></i>
                     </a>
                 </li>
